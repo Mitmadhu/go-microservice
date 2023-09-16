@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
-
+"os"
 	"github.com/gorilla/mux"
 )
 
@@ -28,21 +26,23 @@ func main() {
 }
 
 func getHandler(w http.ResponseWriter, r *http.Request) {
-    // Get the current working directory
-    currentDir, err := os.Getwd()
-    if err != nil {
-        http.Error(w, "Failed to get current working directory", http.StatusInternalServerError)
-        return
+    filePath := "static/index.html"
+
+    // Use os.Stat to get file information
+    _, err := os.Stat(filePath)
+
+    if err == nil {
+        // The file exists
+        fmt.Printf("File %s exists.\n", filePath)
+    } else if os.IsNotExist(err) {
+        // The file does not exist
+        fmt.Printf("File %s does not exist.\n", filePath)
+    } else {
+        // An error occurred while checking the file
+        fmt.Printf("Error checking file %s: %v\n", filePath, err)
     }
-
-    // Define the relative path to your HTML file
-    relativePath := "main/index.html" // Modify this to your actual relative path
-
-    // Create the absolute path by joining the current directory and the relative path
-    absolutePath := filepath.Join(currentDir, relativePath)
-	fmt.Println(absolutePath)
-    // Serve the HTML file
-    http.ServeFile(w, r, absolutePath)
+    
+    http.ServeFile(w, r, "static/index.html")
 }
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
