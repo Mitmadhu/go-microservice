@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS Link -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- JavaScript Link (requires jQuery) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Get response from micro-service</h2>
+    <form id="getUserData" method="get" action="/user" onsubmit="return onSubmitForm();">
+        <textarea id="userRequest" rows="4" cols="20"></textarea>
+        <button type="submit">submit</button>
+    </form>
+    <p id="responseData"></p>
+</body>
+<script>
+    function onSubmitForm() {
+        const myForm = document.getElementById("getUserData");
+        const requestData = myForm.elements["userRequest"].value;
+        const userRespEl = document.getElementById("responseData");
+
+        const urlParm = {
+            "username": "ayush.madhu",
+            "password": "123"
+        }
+
+        const url = "http://localhost:8080/user";
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(urlParm)
+        }).then(function (response) {
+            if (response.ok) {
+                // The request was successful, and the response is available in response.text()
+                return response.text();
+            } else {
+                // Handle errors here
+                throw new Error("Network response was not ok.");
+            }
+        }).then(function (userDetails) {
+            userDetails = JSON.stringify(userDetails, null, 4);
+            userRespEl.innerHTML = userDetails;
+
+        }).catch(function (errors) {
+            console.log("Errors during fetching the record")
+        })
+        return false;
+    }
+</script>
+
+</html>
